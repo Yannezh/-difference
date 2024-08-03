@@ -1,0 +1,28 @@
+import requests
+from datetime import datetime, timedelta
+
+def get_btc_price_on_date(date):
+    url = f"https://api.coingecko.com/api/v3/coins/bitcoin/history?date={date.strftime('%d-%m-%Y')}"
+    response = requests.get(url)
+    data = response.json()
+    return data['market_data']['current_price']['usd']
+
+def calculate_percentage_difference(current_price, past_price):
+    return ((current_price - past_price) / past_price) * 100
+
+# Current date
+current_date = datetime.now()
+
+# Date a year ago
+past_date = current_date - timedelta(days=365)
+
+# Get BTC price on current date and a year ago
+current_price = get_btc_price_on_date(current_date)
+past_price = get_btc_price_on_date(past_date)
+
+# Calculate the percentage difference
+percentage_difference = calculate_percentage_difference(current_price, past_price)
+
+print(f"BTC price on {current_date.strftime('%d-%m-%Y')}: ${current_price}")
+print(f"BTC price on {past_date.strftime('%d-%m-%Y')}: ${past_price}")
+print(f"Annual percentage difference: {percentage_difference:.2f}%")
